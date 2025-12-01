@@ -20,23 +20,23 @@
   th,td{padding:8px;border-bottom:1px solid #eee}
   .danger{background:#ef4444}
   .ghost{background:#e6eefd;color:#1e3a8a}
+  .password-box{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 </style>
 </head>
 <body>
 <div class="box">
   <h2>🎛️ 관리자 페이지</h2>
 
+  <!-- 항목 추가 영역 -->
   <div style="display:flex; gap:10px; flex-wrap:wrap;">
     <input id="name" placeholder="항목 이름" />
     <input id="count" type="number" min="1" placeholder="수량" />
     <button onclick="addItem()">추가</button>
-
-    <!-- 🔄 새로고침 버튼 추가 -->
     <button class="ghost" onclick="render()">목록 새로고침</button>
-
     <button class="danger" onclick="resetAll()">전체 리셋</button>
   </div>
 
+  <!-- 항목 목록 테이블 -->
   <table>
     <thead>
       <tr><th>항목</th><th>초기 수량</th><th>남은 수량</th><th>관리</th></tr>
@@ -44,10 +44,17 @@
     <tbody id="list"></tbody>
   </table>
 
+  <!-- 관리자 비밀번호 설정/수정 영역 -->
+  <div class="password-box">
+    <input type="password" id="adminPassInput" placeholder="관리자 비밀번호 입력/수정" />
+    <button onclick="setAdminPassword()">비밀번호 저장/수정</button>
+    <span id="passMsg" style="color:green;"></span>
+  </div>
 
 </div>
 
 <script>
+  // 항목 관리
   let items = JSON.parse(localStorage.getItem("items") || "[]");
 
   function save() {
@@ -58,12 +65,9 @@
   function addItem() {
     const name = document.getElementById("name").value.trim();
     const count = parseInt(document.getElementById("count").value);
-
     if (!name || isNaN(count) || count < 1) return alert("항목명과 수량을 올바르게 입력하세요.");
-
     items.push({ id: Date.now(), name, initial: count, left: count });
     save();
-
     document.getElementById("name").value = "";
     document.getElementById("count").value = "";
   }
@@ -81,12 +85,9 @@
   }
 
   function render() {
-    // 항상 최신 localStorage 기준으로 새로고침 되게 함
     items = JSON.parse(localStorage.getItem("items") || "[]");
-
     const tbody = document.getElementById("list");
     tbody.innerHTML = "";
-
     items.forEach(item => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -100,7 +101,23 @@
   }
 
   render();
+
+  // 관리자 비밀번호 관리
+  function setAdminPassword() {
+    const pass = document.getElementById("adminPassInput").value.trim();
+    if (!pass) return alert("비밀번호를 입력하세요.");
+    localStorage.setItem("adminPass", pass);
+    document.getElementById("passMsg").innerText = "✅ 비밀번호가 저장되었습니다.";
+    setTimeout(() => document.getElementById("passMsg").innerText = "", 3000);
+    document.getElementById("adminPassInput").value = "";
+  }
+
+  // 필요시 다른 페이지에서 확인용
+  function checkAdminPassword(input) {
+    const savedPass = localStorage.getItem("adminPass") || "1234"; // 기본값 1234
+    return input === savedPass;
+  }
+
 </script>
 </body>
 </html>
-
