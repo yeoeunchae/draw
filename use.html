@@ -80,8 +80,11 @@ function checkPass() {
 
 <div class="box">
   <h2>🎉 뽑기</h2>
-  <input id="count" type="number" min="1" placeholder="뽑을 개수를 입력하세요" />
-  <button onclick="draw()">뽑기!</button>
+  <div class="draw-box">
+    <input id="count" type="number" min="1" placeholder="뽑을 개수를 입력하세요" />
+    <button onclick="draw()">뽑기!</button>
+  </div>
+
   <div class="result" id="result"></div>
   <div class="small" id="left"></div>
 </div>
@@ -98,6 +101,7 @@ function checkPass() {
 
 </body>
 </html>
+
 
 
 
