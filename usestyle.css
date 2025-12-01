@@ -1,0 +1,78 @@
+/* style.css */
+body {
+  font-family: sans-serif;
+  background: #fafafa;
+  padding: 20px;
+  text-align: center;
+  margin: 0;
+}
+
+.box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  padding: 14px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  white-space: pre-line;
+}
+
+.small {
+  color: #777;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 14px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
