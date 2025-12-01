@@ -8,6 +8,26 @@
  }
 </script>
 
+    <input type="password" id="adminPass" placeholder="관리자 비밀번호 입력" />
+<button onclick="checkPass()">확인</button>
+
+<script>
+  function checkPass() {
+    const input = document.getElementById("adminPass").value;
+
+    // 실제 사용할 비밀번호
+    const realPassword = "1234";
+
+    if (input === realPassword) {
+      alert("관리자 페이지로 이동합니다.");
+      window.location.href = "admin.html";
+    } else {
+      alert("비밀번호가 틀렸습니다!");
+    }
+  }
+</script>
+
+
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>뽑기 페이지</title>
@@ -102,3 +122,4 @@
 
 </body>
 </html>
+
