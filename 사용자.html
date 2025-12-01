@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <link rel="manifest" href="manifest.json">
+<script>
+ if ("serviceWorker" in navigator) {
+   navigator.serviceWorker.register("/service-worker.js");
+ }
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>뽑기 페이지</title>
+<style>
+  body{font-family:sans-serif;background:#fafafa;padding:20px;text-align:center;margin:0}
+  .box{background:#fff;padding:30px;border-radius:14px;max-width:500px;margin:auto;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+  button{padding:14px 20px;font-size:18px;border-radius:10px;border:0;background:#2563eb;color:#fff;cursor:pointer;width:100%}
+  .result{margin-top:20px;font-size:20px;font-weight:bold;white-space:pre-line}
+  .small{color:#777;margin-top:10px;font-size:13px}
+  input{padding:10px;border-radius:8px;border:1px solid #ddd;width:100%;margin-bottom:12px;font-size:16px;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>🎉 뽑기</h2>
+
+  <input id="count" type="number" min="1" placeholder="뽑을 개수를 입력하세요" />
+
+  <button onclick="draw()">뽑기!</button>
+
+  <div class="result" id="result"></div>
+  <div class="small" id="left"></div>
+</div>
+
+<script>
+  function loadItems() {
+    return JSON.parse(localStorage.getItem("items") || "[]");
+  }
+
+  function saveItems(items) {
+    localStorage.setItem("items", JSON.stringify(items));
+  }
+
+  function draw() {
+    let items = loadItems();
+    let pool = [];
+
+    items.forEach(i => {
+      for (let x = 0; x < i.left; x++) pool.push(i);
+    });
+
+    let drawCount = parseInt(document.getElementById("count").value);
+
+    if (isNaN(drawCount) || drawCount < 1) {
+      alert("뽑을 개수를 입력하세요.");
+      return;
+    }
+
+    if (pool.length === 0) {
+      document.getElementById("result").innerText = "❌ 더 이상 남은 항목이 없습니다.";
+      return;
+    }
+
+    // 실제로 뽑을 수 있는 최대 개수
+    let available = pool.length;
+    let finalCount = Math.min(drawCount, available);
+
+    let results = [];
+
+    for (let i = 0; i < finalCount; i++) {
+      const picked = pool[Math.floor(Math.random() * pool.length)];
+      results.push(picked.name);
+
+      // 수량 차감
+      const target = items.find(it => it.id === picked.id);
+      target.left--;
+
+      // pool 다시 만들거나 해당 항목 제거
+      pool = [];
+      items.forEach(it => {
+        for (let x = 0; x < it.left; x++) pool.push(it);
+      });
+    }
+
+    saveItems(items);
+
+    document.getElementById("result").innerText =
+      results.map((r, idx) => `${idx + 1}. ${r}`).join("\n");
+
+    updateLeft();
+  }
+
+  function updateLeft() {
+    let items = loadItems();
+    let total = items.reduce((a,b)=>a + b.left, 0);
+    document.getElementById("left").innerText = `남은 전체 수량: ${total}`;
+  }
+
+  updateLeft();
+</script>
+
+</body>
+</html>

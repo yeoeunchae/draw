@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <link rel="manifest" href="manifest.json">
+<script>
+ if ("serviceWorker" in navigator) {
+   navigator.serviceWorker.register("/service-worker.js");
+ }
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>뽑기 관리자 페이지</title>
+<style>
+  body{font-family:sans-serif;background:#f6f8fb;padding:20px;margin:0}
+  .box{background:#fff;padding:20px;border-radius:10px;max-width:800px;margin:auto;box-shadow:0 3px 12px rgba(0,0,0,0.08)}
+  input,button{padding:8px;border-radius:8px;border:1px solid #ddd}
+  button{background:#2563eb;color:#fff;border:0;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:8px;border-bottom:1px solid #eee}
+  .danger{background:#ef4444}
+  .ghost{background:#e6eefd;color:#1e3a8a}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>🎛️ 관리자 페이지</h2>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <input id="name" placeholder="항목 이름" />
+    <input id="count" type="number" min="1" placeholder="수량" />
+    <button onclick="addItem()">추가</button>
+
+    <!-- 🔄 새로고침 버튼 추가 -->
+    <button class="ghost" onclick="render()">목록 새로고침</button>
+
+    <button class="danger" onclick="resetAll()">전체 리셋</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>항목</th><th>초기 수량</th><th>남은 수량</th><th>관리</th></tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+
+  <p style="margin-top:20px; font-size:14px; color:#555;">
+    ※ 저장된 항목은 draw.html에서 사용됩니다.
+  </p>
+</div>
+
+<script>
+  let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+  function save() {
+    localStorage.setItem("items", JSON.stringify(items));
+    render();
+  }
+
+  function addItem() {
+    const name = document.getElementById("name").value.trim();
+    const count = parseInt(document.getElementById("count").value);
+
+    if (!name || isNaN(count) || count < 1) return alert("항목명과 수량을 올바르게 입력하세요.");
+
+    items.push({ id: Date.now(), name, initial: count, left: count });
+    save();
+
+    document.getElementById("name").value = "";
+    document.getElementById("count").value = "";
+  }
+
+  function removeItem(id) {
+    if (!confirm("삭제할까요?")) return;
+    items = items.filter(i => i.id !== id);
+    save();
+  }
+
+  function resetAll() {
+    if (!confirm("모든 항목을 초기화할까요?")) return;
+    items = [];
+    save();
+  }
+
+  function render() {
+    // 항상 최신 localStorage 기준으로 새로고침 되게 함
+    items = JSON.parse(localStorage.getItem("items") || "[]");
+
+    const tbody = document.getElementById("list");
+    tbody.innerHTML = "";
+
+    items.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.name}</td>
+        <td>${item.initial}</td>
+        <td>${item.left}</td>
+        <td><button class="danger" onclick="removeItem(${item.id})">삭제</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
