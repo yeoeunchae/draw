@@ -52,17 +52,19 @@
     document.getElementById("adminPass").value = "";
   }
 
-  function checkPass() {
-    const input = document.getElementById("adminPass").value;
-    const realPassword = "1234"; // 실제 비밀번호
+function checkPass() {
+  const input = document.getElementById("adminPass").value;
+  const realPassword = "1234"; // 실제 비밀번호
 
-    if (input === realPassword) {
-      alert("관리자 페이지로 이동합니다.");
-      window.location.href = "admin.html";
-    } else {
-      alert("비밀번호가 틀렸습니다!");
-    }
+  if (input === realPassword) {
+    alert("관리자 페이지를 새 탭으로 엽니다.");
+    window.open("admin.html", "_blank"); // 새 탭으로 열기
+    closeAdminModal(); // 팝업 닫기
+  } else {
+    alert("비밀번호가 틀렸습니다!");
   }
+}
+
 
   function loadItems() {
     return JSON.parse(localStorage.getItem("items") || "[]");
@@ -130,3 +132,4 @@
 
 </body>
 </html>
+
